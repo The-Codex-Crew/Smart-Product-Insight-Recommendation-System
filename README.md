@@ -1,7 +1,7 @@
 # Smart-Shopping-App
-# 🛒 Smart Product Insight & Recommendation System
+#  Smart Product Insight & Recommendation System
 
-## 👨‍💻 Team: The Codex Crew
+## Team: The Codex Crew
 
 * Kulsoom Zehra
 * Harshitha Nirmal
@@ -9,7 +9,7 @@
 
 ---
 
-## 📌 Project Overview
+## Project Overview
 
 This project is a **Smart Shopping Web Application** that helps users find the best products based on their preferences.
 
