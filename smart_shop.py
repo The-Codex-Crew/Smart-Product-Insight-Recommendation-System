@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from html import escape
+from pathlib import Path
 from textwrap import dedent
 
 
@@ -15,6 +16,7 @@ st.set_page_config(
 
 
 DATASET_FILE = "amazon.csv"
+STYLE_FILE = Path(__file__).with_name("style.css")
 PLACEHOLDER_IMAGE = "https://placehold.co/640x420/F4E5D7/5D4037?text=No+Image"
 REQUIRED_COLUMNS = [
     "product_id",
@@ -165,282 +167,11 @@ def render_pagination_controls(page_key, total_items, current_page, total_pages,
 
 
 def inject_styles():
-    st.markdown(
-        """
-        <style>
-            :root {
-                --panel: rgba(255, 250, 245, 0.92);
-                --ink: #2f241f;
-                --muted: #70584d;
-                --accent: #9f6d52;
-                --accent-dark: #6d4633;
-                --success: #365d4b;
-                --border: rgba(109, 70, 51, 0.18);
-                --shadow: 0 18px 38px rgba(92, 66, 48, 0.12);
-            }
+    if not STYLE_FILE.exists():
+        return
 
-            .stApp {
-                background:
-                    radial-gradient(circle at top left, rgba(212, 188, 166, 0.34), transparent 28%),
-                    radial-gradient(circle at top right, rgba(210, 163, 131, 0.18), transparent 24%),
-                    linear-gradient(180deg, #f8f2ea 0%, #efe3d3 100%);
-                color: var(--ink);
-            }
-
-            [data-testid="stSidebar"] {
-                background: linear-gradient(180deg, #2f241f 0%, #45342b 100%);
-                border-right: 1px solid rgba(255, 255, 255, 0.08);
-            }
-
-            [data-testid="stSidebar"] * {
-                color: #f6ede5 !important;
-            }
-
-            [data-testid="stMetricValue"] {
-                color: var(--accent-dark);
-            }
-
-            [data-testid="stMetricLabel"] {
-                color: var(--muted) !important;
-            }
-
-            [data-testid="stMetricLabel"] * {
-                color: var(--muted) !important;
-            }
-
-            .stButton > button {
-                background: linear-gradient(180deg, #edd3b6 0%, #e2be98 100%);
-                color: #4d3327 !important;
-                border: 1px solid rgba(109, 70, 51, 0.22);
-                border-radius: 14px;
-                font-weight: 700;
-                box-shadow: 0 8px 18px rgba(120, 86, 64, 0.12);
-            }
-
-            .stButton > button:hover {
-                background: linear-gradient(180deg, #f1dbc3 0%, #e8c7a5 100%);
-                color: #3f291f !important;
-                border-color: rgba(109, 70, 51, 0.30);
-            }
-
-            .stButton > button:disabled {
-                background: #efe2d4;
-                color: #9a8476 !important;
-                border-color: rgba(109, 70, 51, 0.12);
-                box-shadow: none;
-            }
-
-            .hero {
-                display: flex;
-                justify-content: space-between;
-                gap: 1.5rem;
-                align-items: stretch;
-                padding: 2rem;
-                border-radius: 28px;
-                border: 1px solid var(--border);
-                background:
-                    linear-gradient(135deg, rgba(255, 251, 246, 0.96), rgba(246, 231, 213, 0.92));
-                box-shadow: var(--shadow);
-                margin-bottom: 1.2rem;
-            }
-
-            .hero-copy {
-                max-width: 760px;
-            }
-
-            .hero-tag {
-                display: inline-block;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                font-size: 0.8rem;
-                font-weight: 700;
-                color: var(--accent-dark);
-                margin-bottom: 0.8rem;
-            }
-
-            .hero h1 {
-                font-size: clamp(2rem, 3vw, 3.3rem);
-                line-height: 1.08;
-                margin: 0 0 0.7rem 0;
-                color: var(--ink);
-            }
-
-            .hero p {
-                margin: 0;
-                color: var(--muted);
-                font-size: 1rem;
-                line-height: 1.7;
-            }
-
-            .hero-grid {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(120px, 1fr));
-                gap: 0.9rem;
-                min-width: 260px;
-            }
-
-            .hero-stat {
-                background: rgba(255, 255, 255, 0.8);
-                border: 1px solid var(--border);
-                border-radius: 18px;
-                padding: 1rem;
-            }
-
-            .hero-stat-label {
-                display: block;
-                color: var(--muted);
-                font-size: 0.8rem;
-                margin-bottom: 0.35rem;
-            }
-
-            .hero-stat-value {
-                display: block;
-                color: var(--accent-dark);
-                font-size: 1.45rem;
-                font-weight: 700;
-            }
-
-            .section-label {
-                font-size: 0.82rem;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: var(--accent-dark);
-                font-weight: 700;
-                margin-bottom: 0.2rem;
-            }
-
-            .note-box {
-                background: rgba(255, 248, 240, 0.92);
-                border: 1px solid var(--border);
-                border-left: 5px solid var(--accent);
-                border-radius: 18px;
-                padding: 0.95rem 1rem;
-                color: var(--muted);
-                margin-bottom: 1rem;
-            }
-
-            .product-card {
-                background: var(--panel);
-                border: 1px solid var(--border);
-                border-radius: 22px;
-                overflow: hidden;
-                min-height: 410px;
-                box-shadow: 0 14px 28px rgba(88, 62, 48, 0.11);
-                margin-bottom: 1rem;
-            }
-
-            .product-image-wrap {
-                position: relative;
-                height: 220px;
-                background: linear-gradient(180deg, #f4e4d6 0%, #fbf6f0 100%);
-                padding: 0.9rem;
-            }
-
-            .product-image-wrap img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                border-radius: 16px;
-                background: rgba(255, 255, 255, 0.78);
-            }
-
-            .rating-badge {
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-                background: rgba(54, 93, 75, 0.94);
-                color: #f8faf6;
-                border-radius: 999px;
-                padding: 0.35rem 0.7rem;
-                font-size: 0.8rem;
-                font-weight: 700;
-            }
-
-            .product-content {
-                padding: 1rem 1rem 1.15rem 1rem;
-            }
-
-            .product-rank {
-                margin: 0 0 0.45rem 0;
-                color: var(--accent-dark);
-                font-size: 0.78rem;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                font-weight: 700;
-            }
-
-            .product-title {
-                margin: 0 0 0.8rem 0;
-                color: var(--ink);
-                line-height: 1.45;
-                min-height: 4.4rem;
-                font-size: 1rem;
-                font-weight: 700;
-            }
-
-            .meta-line {
-                margin: 0.15rem 0;
-                color: var(--muted);
-                font-size: 0.92rem;
-            }
-
-            .price-row {
-                display: flex;
-                gap: 0.55rem;
-                flex-wrap: wrap;
-                align-items: baseline;
-                margin-top: 0.7rem;
-            }
-
-            .sale-price {
-                color: var(--accent-dark);
-                font-size: 1.25rem;
-                font-weight: 800;
-            }
-
-            .actual-price {
-                color: #8a7166;
-                font-size: 0.95rem;
-                text-decoration: line-through;
-            }
-
-            .discount-pill {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                padding: 0.28rem 0.58rem;
-                border-radius: 999px;
-                background: rgba(159, 109, 82, 0.12);
-                color: var(--accent-dark);
-                font-size: 0.8rem;
-                font-weight: 700;
-            }
-
-            .product-link {
-                display: inline-block;
-                margin-top: 0.85rem;
-                color: var(--accent-dark);
-                text-decoration: none;
-                font-weight: 700;
-            }
-
-            .product-link:hover {
-                text-decoration: underline;
-            }
-
-            @media (max-width: 900px) {
-                .hero {
-                    flex-direction: column;
-                }
-
-                .hero-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-            }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    css = STYLE_FILE.read_text(encoding="utf-8")
+    st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
 
 def render_hero(total_products, total_categories, dataset_name):
@@ -626,6 +357,10 @@ def build_sidebar(df, categories):
 
     selected_category = st.sidebar.selectbox("Category", categories)
     category_df = df[df["category"] == selected_category].copy()
+    search_query = st.sidebar.text_input(
+        "Search product name",
+        placeholder="Type a keyword...",
+    ).strip()
     max_price = int(category_df["discounted_price"].max())
     default_price = int(
         min(
@@ -659,10 +394,17 @@ def build_sidebar(df, categories):
 
     st.sidebar.markdown("---")
     st.sidebar.write(f"Products in category: {len(category_df):,}")
+    if search_query:
+        search_count = category_df["product_name"].str.contains(
+            search_query,
+            case=False,
+            na=False,
+        ).sum()
+        st.sidebar.write(f"Search matches: {search_count:,}")
     st.sidebar.write(f"Average rating: {category_df['rating'].mean():.2f}")
     st.sidebar.write(f"Median price: {format_price(category_df['discounted_price'].median())}")
 
-    return selected_category, selected_price, selected_rating, card_count
+    return selected_category, search_query, selected_price, selected_rating, card_count
 
 
 def main():
@@ -681,12 +423,18 @@ def main():
 
     render_hero(len(df), len(categories), DATASET_FILE)
 
-    selected_category, selected_price, selected_rating, card_count = build_sidebar(df, categories)
+    selected_category, search_query, selected_price, selected_rating, card_count = build_sidebar(df, categories)
 
     category_df = df[df["category"] == selected_category].copy()
-    filtered_df = category_df[
-        (category_df["discounted_price"] <= selected_price)
-        & (category_df["rating"] >= selected_rating)
+    search_df = category_df.copy()
+    if search_query:
+        search_df = search_df[
+            search_df["product_name"].str.contains(search_query, case=False, na=False)
+        ].copy()
+
+    filtered_df = search_df[
+        (search_df["discounted_price"] <= selected_price)
+        & (search_df["rating"] >= selected_rating)
     ].copy()
 
     recommended_base = filtered_df.sort_values(
@@ -700,6 +448,7 @@ def main():
     )
     recommended_signature = (
         selected_category,
+        search_query,
         selected_price,
         selected_rating,
         card_count,
@@ -712,9 +461,10 @@ def main():
         card_count,
     )
 
-    related_pool = pick_related_products(category_df, recommended_df)
+    related_pool = pick_related_products(search_df, recommended_df)
     related_signature = (
         selected_category,
+        search_query,
         selected_price,
         selected_rating,
         card_count,
@@ -740,7 +490,7 @@ def main():
             """
             <div class="note-box">
                 No products match the current category, price, and rating filters. Try lowering the
-                minimum rating or increasing the price range.
+                minimum rating, increasing the price range, or changing the search text.
             </div>
             """,
             unsafe_allow_html=True,
@@ -749,7 +499,7 @@ def main():
     section_heading(
         "Recommendation block",
         "Recommended Products",
-        "Products are filtered by category, maximum price, and minimum rating, then ranked by quality.",
+        "Products are filtered by category, search text, maximum price, and minimum rating, then ranked by quality.",
     )
     render_product_grid(recommended_df, "Pick")
     render_pagination_controls(
@@ -766,7 +516,7 @@ def main():
     section_heading(
         "Discovery block",
         "Customers Also Bought",
-        "More items from the same category, prioritizing affordable alternatives with solid ratings.",
+        "More items from the current category or search results, prioritizing affordable alternatives with solid ratings.",
     )
     render_product_grid(related_df, "More")
     render_pagination_controls(
